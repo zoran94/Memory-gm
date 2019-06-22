@@ -103,3 +103,8 @@ body {
       color: white
     }
        
+
+       .block {
+          pointer-events: none; 
+       }
+       
