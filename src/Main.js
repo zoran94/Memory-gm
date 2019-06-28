@@ -49,11 +49,7 @@ class Game extends React.Component {
         return newArr
     }
 
-    handleClick = (e) => {
-        let element = e.target;
-        element.classList.add("reveal");
-        this.state.pair.push(element.style.backgroundImage);
-
+    pairClick = () => {
         let pairs = document.querySelectorAll(".reveal");
         if (this.state.pair.length === 2 && this.state.pair[0] === this.state.pair[1]) {
             setTimeout(() => {
@@ -74,19 +70,31 @@ class Game extends React.Component {
                 });
                 this.setState({
                     pair: [],
+                }, () => {
+                    let notRevealed = document.querySelectorAll(".grid-item:not(.revealed)");
+                    notRevealed.forEach(e => e.classList.add("block"))
                 })
             }, 1000)
 
-            let notRevealed = document.querySelectorAll(".grid-item:not(.revealed)");
-            notRevealed.forEach(e => e.classList.add("block"))
         }
         setTimeout(() => {
             document.querySelectorAll(".block").forEach(e => e.classList.remove("block"))
         }, 1500)
     }
 
-    winner = () => {
+    handleClick = (e) => {
+        const { pair } = this.state;
+        if (pair.length <= 1) {
+            let element = e.target;
+            element.classList.add("reveal");
+            this.setState((state) => ({
+                pair: [...state.pair, element.style.backgroundImage]
+            }), this.pairClick)
+        }
 
+    }
+
+    winner = () => {
         if (this.state.numOfHidden === 16) {
             return (
                 <>
@@ -94,17 +102,12 @@ class Game extends React.Component {
                 </>
             )
         }
-
     }
 
 
     Reload = () => {
         window.location.reload()
     }
-
-
-
-
 
     render() {
         return (
