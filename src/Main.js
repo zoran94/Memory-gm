@@ -6,7 +6,7 @@ class Game extends React.Component {
         super(props)
         this.state = {
             images: [
-                "https://apal.org.au/wp-content/uploads/2016/05/Red-Delicious.jpg",
+                "https://i5.walmartimages.ca/images/Large/799/2_r/6000196087992_R.jpg",
                 "https://target.scene7.com/is/image/Target/GUEST_f5d0cfc3-9d02-4ee0-a6c6-ed5dc09971d1?wid=488&hei=488&fmt=pjpeg",
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3ahiNcFCVAfG2iDBn0Ye9oPGw5wM8FoCZNq2s-0_dQNxZiTP6vw",
                 "https://i5.walmartimages.ca/images/Large/855/1_r/6000191268551_R.jpg",
@@ -16,21 +16,22 @@ class Game extends React.Component {
                 "https://www.restoranibeograd.com/storage/news/interior/296/papaja.jpg"
             ],
             pair: [],
-            numOfHidden: 0
-
+            numOfHidden: 0,
         }
     }
 
 
     componentDidMount() {
+        this.onShuffledCards();
+    }
 
+    onShuffledCards = () => {
         let shuffled = this.shuffleCards(this.state.images);
         this.setState({
             images: shuffled
         })
+
     }
-
-
 
     shuffleCards = (arr) => {
         let newArr = arr.concat(arr);
@@ -49,6 +50,17 @@ class Game extends React.Component {
         return newArr
     }
 
+    handleClick = (e) => {
+        const { pair } = this.state;
+        if (pair.length <= 1) {
+            let element = e.target;
+            element.classList.add("reveal");
+            this.setState((state) => ({
+                pair: [...state.pair, element.style.backgroundImage]
+            }), this.pairClick)
+        }
+    }
+
     pairClick = () => {
         let pairs = document.querySelectorAll(".reveal");
         if (this.state.pair.length === 2 && this.state.pair[0] === this.state.pair[1]) {
@@ -59,7 +71,7 @@ class Game extends React.Component {
                 });
                 this.setState({
                     pair: [],
-                    numOfHidden: this.state.numOfHidden + 2
+                    numOfHidden: this.state.numOfHidden + 2,
                 })
             }, 1000);
 
@@ -82,17 +94,6 @@ class Game extends React.Component {
         }, 1500)
     }
 
-    handleClick = (e) => {
-        const { pair } = this.state;
-        if (pair.length <= 1) {
-            let element = e.target;
-            element.classList.add("reveal");
-            this.setState((state) => ({
-                pair: [...state.pair, element.style.backgroundImage]
-            }), this.pairClick)
-        }
-
-    }
 
     winner = () => {
         if (this.state.numOfHidden === 16) {
@@ -110,6 +111,7 @@ class Game extends React.Component {
     }
 
     render() {
+        console.log(this.state.numOfHidden)
         return (
             <>
                 <h1 className="text-center">Memory game</h1>
